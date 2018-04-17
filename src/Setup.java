@@ -143,7 +143,7 @@ public class Setup {
 			    	            }
 			    	            String path2 = "C:/ProgramData/AntiP";
 			    	            if(!System.getProperty("os.name").contains("Windows"))
-			    	            	path2 = "home/Documents/AntiP";
+			    	            	path2 = "/home/"+System.getProperty("user.name")+"/Documents/AntiP";
 			    	            File theDir2 = new File(path2); // if the directory does not exist, create it
 			    	            if (!theDir2.exists()) {
 			    	            	l2.setText("creating directory: " + theDir2.getName());
