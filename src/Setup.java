@@ -58,8 +58,6 @@ public class Setup {
     static ActionListener install;
     static HttpURLConnection http;
     public static void main(String args[]) throws Throwable{
-        HID = Functions.getHID();
-        System.out.println("HID is "+HID);
         //----getting email id and password from user... login---//
 		JFrame f=new JFrame();//creating instance of JFrame  
 		f.setResizable(false);
@@ -330,5 +328,14 @@ public class Setup {
 		//f.pack();
 		f.setLocationRelativeTo(null);
 		f.setVisible(true);
+		try {
+			HID = Functions.getHID();
+	        System.out.println("HID is "+HID);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(f, "Please make sure you're connected.");
+			System.exit(1);
+		}
     }
 }
