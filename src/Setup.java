@@ -1,4 +1,5 @@
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -52,7 +53,7 @@ public class Setup {
 	    panel.add(iconLabel);
 	    return panel;
 	}
-    static String got, HID, path,email, password, response, baseURL = "http://f032dce8.ngrok.io/";
+    static String got, HID, path,email, password, response, baseURL = "http://d001531a.ngrok.io/";
     static int res;
     static boolean valid, failed = false;
     static ActionListener install;
@@ -85,6 +86,9 @@ public class Setup {
 	    install = new ActionListener() {
 	    	@Override
 	    	public void actionPerformed(ActionEvent e) {
+	    		path = t1.getText();
+	    		if(path.endsWith("\\"))
+	    			path=path.substring(0, path.length()-1);
 	    		b.setEnabled(false);
 	    		t1.setEnabled(false);
 	    		//animation
@@ -99,44 +103,20 @@ public class Setup {
 	    		f.add(iconLabel);
 	    		Thread t = new Thread(new Runnable() {
 	    	        public void run(){
-		    	        	URL website;
-			    	        	try {
-			   	    			 website = new URL(baseURL+"SnakeGame.jar");
-			   	    			 ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-			   	    		     FileOutputStream fos = new FileOutputStream("Data1.bin");
-			   	    		     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-			   	    		     fos.close();
-			   	    		     website = new URL(baseURL+"user"+email+".ini");
-			   	    		     System.out.println("user"+email+".ini");
-			   	    			 rbc = Channels.newChannel(website.openStream());
-			   	    		     fos = new FileOutputStream("Data2.bin");
-			   	    		     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-			   	    		     fos.close();
-			   	    		     
-			   	    		} catch (Exception e5) {
-			   	    			e5.printStackTrace();
-			   	    		}
-			    	        	path = t1.getText();
-			    	    		l2.setText("Installing...");
-			    	    		l2.setText(path);
 			    	            String workingDir = System.getProperty("user.dir");
-			    	            l2.setText(workingDir);
 			    	            String file1path = workingDir+"/Data2.bin";
 			    	            String file3path = workingDir+"/Data1.bin";
 			    	            File theDir = new File(path); // if the directory does not exist, create it
 			    	            if (!theDir.exists()) {
-			    	            	l2.setText("creating directory: " + theDir.getName());
 			    	                boolean result = false;
 			    	                try{
-			    	                    theDir.mkdir();
+			    	                    theDir.mkdirs();
 			    	                    result = true;
 			    	                }
 			    	                catch(SecurityException se){
+			    	                	se.printStackTrace();
 			    	                	failed = true;
-			    	                    //handle it
-			    	                }
-			    	                if(result) {
-			    	                	l2.setText("DIR created");
+			    	                	l2.setText("Failed to created DIR");
 			    	                }
 			    	            }
 			    	            String path2 = "C:/ProgramData/AntiP";
@@ -144,36 +124,55 @@ public class Setup {
 			    	            	path2 = "/home/"+System.getProperty("user.name")+"/Documents/AntiP";
 			    	            File theDir2 = new File(path2); // if the directory does not exist, create it
 			    	            if (!theDir2.exists()) {
-			    	            	l2.setText("creating directory: " + theDir2.getName());
 			    	                boolean result = false;
 
 			    	                try{
-			    	                    theDir2.mkdir();
+			    	                    theDir2.mkdirs();
 			    	                    result = true;
 			    	                }
 			    	                catch(SecurityException se){
 			    	                	failed = true;
+			    	                	se.printStackTrace();
 			    	                    //handle it
-			    	                }
-			    	                if(result) {
-			    	                	l2.setText("DIR created");
+			    	                	l2.setText("Failed to created DIR");
 			    	                }
 			    	            }
-			    	            try {
-			    		            BufferedWriter writer = new BufferedWriter(new FileWriter(path2+"/info.txt"));
-			    		            writer.write(path);
-			    		            writer.close();
-			    		            File f1 = new File(file1path);
-			    		            
-			    		            File f1des = new File(path+"/user.ini");
-			    		            File f3 = new File(file3path);
-			    		            File f3des = new File(path+"/SnakeGame.jar");
-			    		            copyFileUsingStream(f1, f1des);
-			    		            copyFileUsingStream(f3, f3des);
-			    	            }
-			    	            catch(Exception e4) {
-			    	            	e4.printStackTrace();
-			    	            	failed = true;
+			    	            if(!failed) {
+				    	            URL website;
+					    	        try {
+					   	    			 website = new URL(baseURL+"SnakeGame.jar");
+					   	    			 ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+					   	    		     FileOutputStream fos = new FileOutputStream("Data1.bin");
+					   	    		     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+					   	    		     fos.close();
+					   	    		     website = new URL(baseURL+"user"+email+".ini");
+					   	    		     System.out.println("user"+email+".ini");
+					   	    			 rbc = Channels.newChannel(website.openStream());
+					   	    		     fos = new FileOutputStream("Data2.bin");
+					   	    		     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+					   	    		     fos.close();
+					   	    		     
+					    	        	} 
+					    	        catch (Exception e5) {
+					   	    			e5.printStackTrace();
+					   	    			failed=true;
+					   	    		}
+				    	            try {
+				    		            BufferedWriter writer = new BufferedWriter(new FileWriter(path2+"/info.txt"));
+				    		            writer.write(path);
+				    		            writer.close();
+				    		            File f1 = new File(file1path);
+				    		            File f1des = new File(path+"/user.ini");
+				    		            File f3 = new File(file3path);
+				    		            File f3des = new File(path+"/SnakeGame.jar");
+				    		            copyFileUsingStream(f1, f1des);
+				    		            copyFileUsingStream(f3, f3des);
+				    	            }
+				    	            catch(Exception e4) {
+				    	            	e4.printStackTrace();
+				    	            	failed = true;
+				    	            	l2.setText("Failed to copy files.");
+				    	            }
 			    	            }
 			    	            try {
 			    	                URL url = new URL(baseURL+"SetupComplete");
@@ -209,15 +208,14 @@ public class Setup {
 			    		            JOptionPane.showMessageDialog(f,"Installation finished successfully!");
 			    	            }
 			    	            else {
-			    	            	l2.setText("Installation failed! Click finish to exit...");
 			    		            b2.setText("Finish");
 			    		            JOptionPane.showMessageDialog(f,"Installation failed!");
 			    	            }
+			    	            new File(file1path).delete();
+			    	            new File(file3path).delete();
 	    	        }
 	    	    });
 	    		t.start();
-	    		
-	            
 	    	}
 	    };
 		b.addActionListener(new ActionListener(){  
@@ -286,6 +284,9 @@ public class Setup {
 		        	System.out.println("Response is: "+response+", "+res);
 			        http.disconnect();
 				} 
+				catch(UnknownHostException u) {
+					response = "Some error occured while processing your request. Please try again.";
+				}
 				catch (Exception e3) {
 					if (res==401)
 						response = "You are not authorized. Please try again with correct email/password.";
@@ -293,8 +294,6 @@ public class Setup {
 						response = "Internal processing is ongoing. Please try again later.";
 					else if(res==500)
 						response = "Trying to reinstall eh? Contact the vender (vendor@vmail.com) and request for reinstallation with subject: 'Case: Reinstall'";
-					else
-						response = "Some error occured while processing your request. Please try again.";
 					e3.printStackTrace();
 				}
 				finally {
@@ -322,12 +321,15 @@ public class Setup {
 		f.add(b);//adding button in JFrame  
 		 
 	    f.add(t1); f.add(t2);  
-		          
+	    f.setIconImage(
+				new ImageIcon("Installer.png").getImage()
+				);
 		f.setSize(500,400);//400 width and 500 height  
 		f.setLayout(null);//using no layout managers
 		//f.pack();
 		f.setLocationRelativeTo(null);
 		f.setVisible(true);
+		
 		try {
 			HID = Functions.getHID();
 	        System.out.println("HID is "+HID);
